@@ -2,8 +2,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { SessionProvider } from "next-auth/react";
-import type { AppProps } from 'next/app'
+import SessionProvider, { NextAuthProvider } from "@/components/serverProvider";
+import { getServerSession } from "next-auth";
+
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -16,17 +17,24 @@ title: "Create Next App",
 
 
 
-const App =  ({
+const App =  async ({
  children
 }: React.PropsWithChildren
 ) => {
 
-
+  const session = await getServerSession()
+  console.log(session)
 
   return (
     <html>
       <body>
-          {children}
+         <main>
+    <SessionProvider>
+    {children}
+
+    </SessionProvider>
+         </main>
+
       </body>
     </html>
   )

@@ -7,6 +7,7 @@ export default async function SetupLayout({
 }: {
   children: React.ReactNode;
 }) {
+
    
     return(
         <>
