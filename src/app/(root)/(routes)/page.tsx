@@ -1,13 +1,17 @@
 import { CredentialsForm } from "@/components/credentialsForm";
-
-export default function Home() {
-
-  
+import { getServerSession } from "next-auth";
 
 
-  // Formulario para testar back-end
+
+export default async function Home() {
+
+  const session = await getServerSession()
+  console.log(session)
   return (
-    <CredentialsForm/>  
+   <>
+   <CredentialsForm/>  
+   </>
+
     
   )
 }
