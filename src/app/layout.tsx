@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import SessionProvider, { NextAuthProvider } from "@/components/serverProvider";
-import { getServerSession } from "next-auth";
+
 
 
 
@@ -22,8 +22,7 @@ const App =  async ({
 }: React.PropsWithChildren
 ) => {
 
-  const session = await getServerSession()
-  console.log(session)
+
 
   return (
     <html>
