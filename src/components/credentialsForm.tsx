@@ -4,25 +4,23 @@ import axios from "axios";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { Component, useCallback, useState } from "react";
-import Input from "./Input";
-import { getServerSession } from "next-auth";
-import authConfig from "@/lib/auth";
+import { FiGithub } from "react-icons/fi";
+import { FaGithub } from "react-icons/fa";
 
 interface CredentialsFormProps {
   csrfToken?: string;
 }
 
-
-
 export function CredentialsForm(props: CredentialsFormProps) {
-  
-
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [variant, setVariant] = useState("login");
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+
+
 
   const toggleVariant = useCallback(() => {
     setVariant((currentVariant) =>
@@ -31,16 +29,15 @@ export function CredentialsForm(props: CredentialsFormProps) {
   }, []);
 
   const login = useCallback(async () => {
-
+ 
     try {
       const signInData = await signIn("credentials", {
         email,
         password,
-        redirect: false,
+        redirect: true,
         callbackUrl: "/",
-      })
+      });
 
-      console.log(signInData)
     } catch (e) {
       console.log("Error trying to login");
       console.log(e);
@@ -48,6 +45,7 @@ export function CredentialsForm(props: CredentialsFormProps) {
   }, [email, password]);
 
   const register = useCallback(async () => {
+  
     try {
       const registerData = await axios.post("/api/register", {
         email,
@@ -55,7 +53,6 @@ export function CredentialsForm(props: CredentialsFormProps) {
         password,
       });
       console.log("Successfull register");
-      console.log(registerData)
       router.push("/");
     } catch (e) {
       console.log("Error trying to register");
@@ -63,65 +60,75 @@ export function CredentialsForm(props: CredentialsFormProps) {
     }
   }, [email, nickname, password]);
 
+  
   return (
-    <div className="relative h-full w-full">
-      <div className="bg-slate-400 w-full h-full lg:bg-opacity-90">
-        <div className="flex justify-center">
-          <div className="px-16 py-16 self-center mt-2 lg:w-2/5 lg:max-w-md rounded-md w-full">
-            <h1 className="text-black text-5lx mb-5 font-semibold">
-              {variant === "login" ? "Sign in" : "Create an account"}
-            </h1>
+        <div className="bg-gray-800 p-8 rounded shadow-md w-96">
+          <form>
+            <div className="mb-4">
+            
+             {
+              variant === "signup" && (
+              <>
+                <label className="block text-sm font-bold mb-2" >
+                Username
+              </label>
+                <input
+                onChange={(e) => setNickname(e.target.value)}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="nickname"
+                type="text"
+                placeholder="Username"
+              />
 
-            <div className="flex flex-col gap-4">
-              {variant === "signup" && (
-                <Input
-                  label="Name"
-                  onChange={(ev: any) => setNickname(ev.target.value)}
-                  id="name"
-                  type="name"
-                  value={nickname}
-                />
-              )}
-
-              <Input
-                label="Email"
-                onChange={(ev: any) => setEmail(ev.target.value)}
+              </>
+              )
+             }
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-bold mb-2">
+                Email
+              </label>
+              <input
+                onChange={(e) => setEmail(e.target.value)}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="email"
                 type="email"
-                value={email}
-              />
-
-              <Input
-                label="Password"
-                onChange={(ev: any) => setPassword(ev.target.value)}
-                id="password"
-                type="password"
-                value={password}
+                placeholder="Email"
               />
             </div>
-            <button
-              onClick={variant === "login" ? login : register}
-              className="bg-red-600 py-3 text-white rounded-md w-full mt-10 hover: bg-red-700 transition"
-            >
-              {variant === "login" ? "Login" : "Register"}
-            </button>
-
-            <div className="flex flex-row items-center gap-4 mt-8 justify-center"></div>
-
-            <p className="text-neutral-500 mt-5">
-              {variant === "login"
-                ? "Registre-se agora "
-                : "Já possui uma conta? "}
-              <span
-                onClick={toggleVariant}
-                className="text-white cursor-pointer"
+            <div className="mb-4">
+              <label className="block text-sm font-bold mb-2">
+                Password
+              </label>
+              <input
+              onChange={(e) => setPassword(e.target.value)}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="password"
+                type="password"
+                placeholder="Password"
+              />
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="button"
+                onClick={variant === "login" ? login : register}
               >
-                {variant === "login" ? "Sign up" : "Login"}
-              </span>
-            </p>
-          </div>
+                {variant === "login" ? "Login" : "Register"}
+              </button>
+              <a
+                className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+                href="#"
+                onClick={()=> toggleVariant()}
+              >
+                {variant === "login" ? "Criar uma conta" : "Faça login"}
+              </a>
+              <div onClick={()=> {signIn("github", {
+                callbackUrl: "/"})}} className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer h over:opacity-80 transition"> <FaGithub size={40} /></div>
+
+            </div>
+          </form>
         </div>
-      </div>
-    </div>
   );
 }
