@@ -17,10 +17,11 @@ const userSchema = z.object({
 
 export async function POST(req: Request) {
     const body = await req.json()
+    
 
     try {
         const {email, nickname, password} = userSchema.parse(body)
-
+     
 
 
         const existingUser = await prismadb.user.findUnique({
@@ -29,8 +30,19 @@ export async function POST(req: Request) {
             }
         })
 
+        const existingNickname = await prismadb.user.findFirst({
+            where: {
+                nickname: nickname
+            }
+        })
+
+
         if(existingUser) {
             return NextResponse.json({error: "Email already in use"}, {status: 409})
+        }
+
+        if(existingNickname) {
+            return NextResponse.json({error: "Nickname already in use"}, {status: 409})
         }
 
        // const hashedPassword = await bcrypt.hash(password, 12)
