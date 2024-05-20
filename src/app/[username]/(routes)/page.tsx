@@ -1,7 +1,6 @@
 
 import Folder from "@/components/folder";
 import SocialMediaLinks from "@/components/socialmedia-links";
-
 import {
   FaTiktok,
   FaGithub,
@@ -12,6 +11,9 @@ import {
   FaLinkedin,
   FaDiscord,
 } from "react-icons/fa";
+import prismadb from '@/lib/prismadb'
+import { ErrorPage } from "@/components/error";
+import { useSession } from "next-auth/react";
 
 interface ProfilePageProps {
   params: {
@@ -31,8 +33,26 @@ interface FolderItem {
 
 const DashboardPage: React.FC<ProfilePageProps> = async ({ params }) => {
   const username = params.username;
+
+  const user = await prismadb.user.findFirst({
+    where: {
+      nickname: username,
+    },
+  })
+
+  if(!user) {
+    
+    return (<ErrorPage error="User does not exist" />)
+  }
+
+
+  
+
+
+
   const profileOrigin = "";
   const description = "Something cool here";
+
 
   const socialMedia = [
     {
@@ -91,14 +111,12 @@ const DashboardPage: React.FC<ProfilePageProps> = async ({ params }) => {
   
  
 
-
-
  
 
   return (
-    <div className="py-4 bg-slate-400 h-full w-full">
+    <div className="py-4 bg-gray-900 h-full w-full">
       <div className="flex items-center justify-center h-screen">
-        <div className="shadow-md bg-black w-11/12 max-w-lg px-2 border-2 border-white rounded-lg">
+        <div className="shadow-md bg-black w-11/12 max-w-lg px-2 rounded-lg">
           // profile
           <div className="flex flex-row items-center">
             <img

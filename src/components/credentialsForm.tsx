@@ -15,7 +15,7 @@ export function CredentialsForm(props: CredentialsFormProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [variant, setVariant] = useState("login");
-  const [nickname, setNickname] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -49,7 +49,7 @@ export function CredentialsForm(props: CredentialsFormProps) {
     try {
       const registerData = await axios.post("/api/register", {
         email,
-        nickname,
+        name,
         password,
       });
       console.log("Successfull register");
@@ -58,7 +58,7 @@ export function CredentialsForm(props: CredentialsFormProps) {
       console.log("Error trying to register");
       console.log(e);
     }
-  }, [email, nickname, password]);
+  }, [email, name, password]);
 
   
   return (
@@ -73,11 +73,11 @@ export function CredentialsForm(props: CredentialsFormProps) {
                 Username
               </label>
                 <input
-                onChange={(e) => setNickname(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="nickname"
+                id="name"
                 type="text"
-                placeholder="Username"
+                placeholder="Nome"
               />
 
               </>

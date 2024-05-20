@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server';
 
 
 const userSchema = z.object({
-    nickname: z.string().min(1, "Username is required").max(100),
+    name: z.string().min(1, "Username is required").max(100),
     email: z.string().min(1, "Email is required").email("Invalid email"),
     password: z
       .string()
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     
 
     try {
-        const {email, nickname, password} = userSchema.parse(body)
+        const {email, name, password} = userSchema.parse(body)
      
 
 
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
         const existingNickname = await prismadb.user.findFirst({
             where: {
-                nickname: nickname
+                name: name
             }
         })
 
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
             data: {
                email,
                hashedPassword,
-               nickname
+               name
             }
         })
 

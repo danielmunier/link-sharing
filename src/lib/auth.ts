@@ -24,7 +24,7 @@ export const authConfig: NextAuthOptions = {
         console.log("authorize");
         console.log(credentials);
         if (!credentials?.email || !credentials?.password) {
-            console.log("Email e senha obrigatórios")
+          console.log("Email e senha obrigatórios");
           throw new Error("Email e senha são obrigatórios");
         }
         const user = await prismadb.user.findUnique({
@@ -34,7 +34,7 @@ export const authConfig: NextAuthOptions = {
         });
 
         if (!user || !user.hashedPassword) {
-            console.log("Email não registrado")
+          console.log("Email não registrado");
           throw new Error("Email não registrado");
         }
 
@@ -53,21 +53,29 @@ export const authConfig: NextAuthOptions = {
       clientSecret: process.env.GITHUB_SECRET || "",
     }),
   ],
+
   callbacks: {
-    async session({session, token}) {
-        const user = await prismadb.user.findUnique({
-            where: {
-                email: session.user?.email || ""
-            }
-        })
-        
-        if(user && session && session.user) {
-            session.user.name = user?.nickname
-        }
+    async session({ session, token }) {
+      console.log(session)
+      const user = await prismadb.user.findUnique({
+        where: {
+          email: session.user?.email || "",
+        },
+      });
 
-        return session
-  }
+      if (user && session && session.user) {
+        session.user.name = user?.name;
+      }
 
-}}
+      return session;
+    },
+  },
+  session: {
+    strategy: "jwt",
+  },
+  jwt: {
+    secret: process.env.NEXTAUTH_JWT_SECRET,
+  },
+};
 
 export default authConfig;
