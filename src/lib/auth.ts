@@ -64,7 +64,7 @@ export const authConfig: NextAuthOptions = {
       });
 
       if (user && session && session.user) {
-        session.user.name = user?.name;
+        session.user.name = user?.username;
       }
 
       return session;

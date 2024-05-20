@@ -14,7 +14,7 @@ model User {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   email String @unique
   hashedPassword String?
-  name String 
+  username String @unique
   createdAt DateTime @default(now())
   updateAt DateTime @updatedAt
   

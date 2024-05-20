@@ -17,6 +17,7 @@ import { useSession } from "next-auth/react";
 
 interface ProfilePageProps {
   params: {
+    url: any;
     userId: string;
     username: string;
     description: string;
@@ -33,16 +34,17 @@ interface FolderItem {
 
 const DashboardPage: React.FC<ProfilePageProps> = async ({ params }) => {
   const username = params.username;
+  if(!username) return (<ErrorPage error="Provide an username in url" />)
 
-  const user = await prismadb.user.findFirst({
+  const urlUser = await prismadb.user.findFirst({
     where: {
-      nickname: username,
+      username: username,
     },
   })
 
-  if(!user) {
+  if(!urlUser) {
     
-    return (<ErrorPage error="User does not exist" />)
+    return (<ErrorPage error="Url doesnt exist" />)
   }
 
 

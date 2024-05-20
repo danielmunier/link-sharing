@@ -6,7 +6,14 @@ import { NextResponse } from 'next/server';
 
 
 const userSchema = z.object({
-    name: z.string().min(1, "Username is required").max(100),
+    username: z
+    .string()
+    .min(1, "Username is required")
+    .max(100)
+    .refine((username) => /^[\w-]+$/.test(username), {
+      message: "Username must only contain letters, numbers, underscores, and hyphens",
+      path: ["username"],
+    }),
     email: z.string().min(1, "Email is required").email("Invalid email"),
     password: z
       .string()
@@ -20,7 +27,8 @@ export async function POST(req: Request) {
     
 
     try {
-        const {email, name, password} = userSchema.parse(body)
+        const {email, username, password} = userSchema.parse(body)
+        console.log(username)
      
 
 
@@ -30,9 +38,9 @@ export async function POST(req: Request) {
             }
         })
 
-        const existingNickname = await prismadb.user.findFirst({
+        const existingUsername = await prismadb.user.findFirst({
             where: {
-                name: name
+                username: username
             }
         })
 
@@ -41,7 +49,7 @@ export async function POST(req: Request) {
             return NextResponse.json({error: "Email already in use"}, {status: 409})
         }
 
-        if(existingNickname) {
+        if(existingUsername) {
             return NextResponse.json({error: "Nickname already in use"}, {status: 409})
         }
 
@@ -53,7 +61,7 @@ export async function POST(req: Request) {
             data: {
                email,
                hashedPassword,
-               name
+               username
             }
         })
 
