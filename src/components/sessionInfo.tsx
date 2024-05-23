@@ -7,18 +7,17 @@ import Link from "next/link"
 
 
 export const SessionInfo = () => {
-    const {data: session, status} =  useSession()
+    const {data: session, status} = useSession()
     if(status === "loading") return <div>Loading...</div>
     if(!session) return (
         <Button text="Login" href="/auth"/>
     ) 
-    console.log(session)
     
     
 
     return (
         <div className="flex flex-col">
-            {session.user?.name}
+           <a href={`/${session.user?.name}`}>{session.user?.name}</a>
             
           
                     <div>
