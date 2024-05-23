@@ -24,6 +24,13 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       where: { id: params.id },
     });
 
+    const existingUsername = await prismadb.user.findUnique({
+      where: { username },
+    })
+    if(existingUsername) {
+      return new NextResponse("Username already exists", { status: 400 });  
+    }
+
     if (!existingUser) {
       return new NextResponse("User not found", { status: 404 });
     }
@@ -32,6 +39,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     if (existingUser.email !== session.user.email) {
       return new NextResponse("Unauthorized", { status: 403 });
     }
+
 
     const updatedUser = await prismadb.user.update({
       where: { id: params.id },
@@ -43,7 +51,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       include: { socialMedia: true }, 
     });
 
-    return NextResponse.json(updatedUser);
+    return new NextResponse("Usuário alterado com sucesso!", {status: 200});
   } catch (error) {
     console.log("[USER_PUT]", error);
     return new NextResponse("Internal error", { status: 500 });
