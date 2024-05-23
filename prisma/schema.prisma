@@ -3,20 +3,34 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider     = "mongodb"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
-
-
 model User {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  email String @unique
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  email          String       @unique
   hashedPassword String?
-  username String @unique
-  createdAt DateTime @default(now())
-  updateAt DateTime @updatedAt
-  
+  username       String       @unique
+  profileImage   String?
+  description    String?
+  createdAt      DateTime     @default(now())
+  updateAt       DateTime     @updatedAt
+  folders        String[]
+  socialMedia    SocialMedia?
+}
 
+model SocialMedia {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String  @db.ObjectId @unique
+  tiktok    String?
+  instagram String?
+  github    String?
+  discord   String?
+  youtube   String?
+  twitter   String?
+  pinterest String?
+  linkedin  String?
 }
