@@ -1,4 +1,3 @@
-
 import Folder from "@/components/folder";
 import SocialMediaLinks from "@/components/socialmedia-links";
 import {
@@ -13,7 +12,7 @@ import {
 } from "react-icons/fa";
 import prismadb from '@/lib/prismadb'
 import { ErrorPage } from "@/components/error";
-import { useSession } from "next-auth/react";
+
 
 interface ProfilePageProps {
   params: {
@@ -34,7 +33,7 @@ interface FolderItem {
 
 const DashboardPage: React.FC<ProfilePageProps> = async ({ params }) => {
   const username = params.username;
-  if(!username) return (<ErrorPage error="Provide an username in url" />)
+  if (!username) return (<ErrorPage error="Provide a username in url" />)
 
   const urlUser = await prismadb.user.findFirst({
     where: {
@@ -42,19 +41,12 @@ const DashboardPage: React.FC<ProfilePageProps> = async ({ params }) => {
     },
   })
 
-  if(!urlUser) {
-    
-    return (<ErrorPage error="Url doesnt exist" />)
+  if (!urlUser) {
+    return (<ErrorPage error="Url doesn't exist" />)
   }
-
-
-  
-
-
 
   const profileOrigin = "";
   const description = "Something cool here";
-
 
   const socialMedia = [
     {
@@ -62,7 +54,6 @@ const DashboardPage: React.FC<ProfilePageProps> = async ({ params }) => {
       icon: <FaTiktok />,
       url: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
     },
-
     {
       name: "Instagram",
       icon: <FaInstagram />,
@@ -100,26 +91,17 @@ const DashboardPage: React.FC<ProfilePageProps> = async ({ params }) => {
     },
   ];
 
-
-
-
- 
-
   const foldersComponents = [
-    <Folder name="Projetos" content={["Teste", "Item 2"]}  />,
-    <Folder name="Musicas" content={["Item 1", "Item 2"]}  />,
-    <Folder name="Projetos" content={["Item 1", "Item 2"]}  />,
+    { id: 1, component: <Folder name="Projetos" content={["Teste", "Item 2"]} /> },
+    { id: 2, component: <Folder name="Musicas" content={["Item 1", "Item 2"]} /> },
+    { id: 3, component: <Folder name="Projetos" content={["Item 1", "Item 2"]} /> },
   ]
-  
- 
-
- 
 
   return (
     <div className="py-4 bg-gray-900 h-full w-full">
       <div className="flex items-center justify-center h-screen">
         <div className="shadow-md bg-black w-11/12 max-w-lg px-2 rounded-lg">
-          // profile
+          {/* profile */}
           <div className="flex flex-row items-center">
             <img
               src="https://cdn.ayo.so/final/89f0052d-82a8-48f6-8006-6bc0ac7aaae3.webp"
@@ -135,16 +117,13 @@ const DashboardPage: React.FC<ProfilePageProps> = async ({ params }) => {
           </div>
           <p className="text-gray-500 m-5"> {description}</p>
           <SocialMediaLinks links={socialMedia} />
-         <div>
-         {
-             foldersComponents.map((folderComponent, index) => (
-              <div key={index}>
-                {folderComponent}
+          <div>
+            {foldersComponents.map(({ id, component }) => (
+              <div key={id}>
+                {component}
               </div>
-            ))
-          }
-
-         </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

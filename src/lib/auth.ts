@@ -3,6 +3,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import prismadb from "@/lib/prismadb";
 import GithubProvider from "next-auth/providers/github";
 
+import type { DefaultSession } from "next-auth";
+
+
 export const authConfig: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
@@ -55,17 +58,22 @@ export const authConfig: NextAuthOptions = {
   ],
 
   callbacks: {
-    async session({ session, token }) {
-      console.log(session)
-      const user = await prismadb.user.findUnique({
+    async session({ session, user, token }) {
+      const userData = await prismadb.user.findUnique({
         where: {
           email: session.user?.email || "",
         },
       });
+      
 
-      if (user && session && session.user) {
-        session.user.name = user?.username;
+      if (userData && session && session.user) {
+        session.user.name = userData?.username;
+        session.user.image = userData?.profileImage
+        session.user.id = userData?.id
+        session.user.description = userData?.description
+        //session.user.socialMedia = userData?.socialMedia
       }
+
 
       return session;
     },

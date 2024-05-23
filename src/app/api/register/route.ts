@@ -3,6 +3,8 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import prismadb from "@/lib/prismadb"
 import * as z from "zod"
 import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import authConfig from '@/lib/auth';
 
 
 const userSchema = z.object({
@@ -23,7 +25,14 @@ const userSchema = z.object({
 
 
 export async function POST(req: Request) {
+    const session = await getServerSession(authConfig);
+    if (session?.user) {
+        return new NextResponse("Authenticed already", { status: 401 });
+    }
+    
+
     const body = await req.json()
+
     
 
     try {
@@ -56,15 +65,24 @@ export async function POST(req: Request) {
        // const hashedPassword = await bcrypt.hash(password, 12)
        const hashedPassword = password
 
-
         const newUser = await prismadb.user.create({
             data: {
                email,
                hashedPassword,
-               username
+               username,
+               profileImage: ""
+               
             }
         })
 
+        console.log(newUser)
+        await prismadb.socialMedia.create({
+            data: {
+                
+                userId: newUser.id
+            }
+        })
+   
         return NextResponse.json(newUser, {status: 200})
 
     }catch(e) {

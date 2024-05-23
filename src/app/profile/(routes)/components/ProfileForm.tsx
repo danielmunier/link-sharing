@@ -10,7 +10,7 @@ type ProfileFormData = {
 
 
 function ProfileForm({sessionUserData}: {sessionUserData: any}) {
-  
+  const [status, setStatus] = useState<string | null>(null);
   const user = sessionUserData.user
 
     const [formData, setFormData] = useState<ProfileFormData>({
@@ -28,17 +28,22 @@ function ProfileForm({sessionUserData}: {sessionUserData: any}) {
         const response = await fetch(`/api/user/${sessionUserData.user.id}`, {
           method: "PUT",
           body: formDataToSend,
-        });
-    
-        // ...
+        })
+        if(response.status != 200) {
+          setStatus(await response.text())
+          return
+        }
+        
+        setStatus(await response.text())
       } catch (error) {
-        // ...
+        console.log(error)
       }
     };
 
 
   return (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto p-3 bg-white rounded shadow-md ">
+      {status && <p className="text-red-500 mb-4">{status}</p>}
       <div className="mb-4">
         <label htmlFor="username" className="block text-gray-700 text-sm font-bold mb-2">
           Nome de Usuário:
