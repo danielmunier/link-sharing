@@ -1,6 +1,4 @@
-"use client";
-
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   FaInstagram,
   FaDiscord,
@@ -11,14 +9,10 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 
-export const InputSocial = ({
-  socialMediaApp,
-  onChange,
-  value,
-}: {
+export const InputSocial = ({ socialMediaApp, onChange, value }: {
   socialMediaApp: string;
-  onChange: (e: any) => void;
-  value?: string;
+  onChange: (value: { name: string; value: string }) => void;
+  value: string;
 }) => {
   const socialIcons = [
     {
@@ -35,7 +29,6 @@ export const InputSocial = ({
   ];
 
   const socialIcon = socialIcons.find((icon) => icon.key === socialMediaApp);
-  const [inputValue, setInputValue] = useState("");
   return (
     <div className="flex items-center space-x-2">
       {socialIcon && (
@@ -43,7 +36,9 @@ export const InputSocial = ({
           <span className={socialIcon.style}>{socialIcon.icon}</span>
           <input
             type="text"
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) =>
+              onChange({ name: socialMediaApp, value: e.target.value })
+            }
             placeholder={socialIcon.key}
             value={value}
             className="pl-10 pr-4 py-2 bg-gray-700 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400"

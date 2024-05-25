@@ -2,13 +2,19 @@
 
 import React, { useState } from 'react';
 import { InputSocial } from './InputSocial';
-import { useSession } from 'next-auth/react';
 
 type ProfileFormData = {
   name: string;
   description: string;
- socialLinks: { [key: string]: string };
 };
+
+type SocialMedia = {
+  instagram: string;
+  tiktok: string;
+  twitter: string;
+  youtube: string;
+};
+
 
 function ProfileForm({ sessionUserData }: { sessionUserData: any }) {
 
@@ -17,26 +23,25 @@ function ProfileForm({ sessionUserData }: { sessionUserData: any }) {
 
   const [formData, setFormData] = useState<ProfileFormData>({
     name: user?.name,
-    description: user?.description,
-    socialLinks: {
-      instagram: user?.socialMedia.instagram,
-      tiktok: user?.socialMedia.tiktok,
-      twitter: user?.socialMedia.twitter,
-      youtube: user?.socialMedia.youtube,
-    }
+    description: user?.description
   });
 
 
+  const [formSocial, setFormSocial] = useState<SocialMedia>({
+      instagram: user?.socialMedia.instagram || "",
+      tiktok: user?.socialMedia.tiktok || "",
+      twitter: user?.socialMedia.twitter || "",
+      youtube: user?.socialMedia.youtube || "",
+  })
 
-  const handleSocialChange = (name: string, value: string) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      socialLinks: {
-        ...prevFormData.socialLinks,
-        [name]: value,
-      },
-    }));
-  };
+const handleSocialChange = (e: {name: string; value: string}) => {
+  const {name, value} = e
+  setFormSocial({
+    ...formSocial,
+    [name]: value
+  })
+}
+ 
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -44,8 +49,9 @@ function ProfileForm({ sessionUserData }: { sessionUserData: any }) {
     formDataToSend.append('name', formData.name);
     formDataToSend.append('description', formData.description);
     // Incluindo as redes sociais
-    for (const [key, value] of Object.entries(formData.socialLinks)) {
-      formDataToSend.append(key, value);
+    for ( const key in formSocial ) {
+      console.log(key)
+      formDataToSend.append(key, formSocial[key]);
     }
 
     try {
@@ -89,8 +95,8 @@ function ProfileForm({ sessionUserData }: { sessionUserData: any }) {
 
       <div className="grid grid-cols-2 gap-4">
       {
-        Object.entries(formData.socialLinks).map(([name, value]) => (
-          <InputSocial key={name} socialMediaApp={name} value={value} onChange={(e) => handleSocialChange(e.target.value)} />
+        Object.entries(formSocial).map(([key, value]) => (
+          <InputSocial key={key} socialMediaApp={key} value={value} onChange={handleSocialChange} />
         ))
       }
       </div>
