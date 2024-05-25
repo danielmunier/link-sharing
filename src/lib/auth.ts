@@ -3,7 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import prismadb from "@/lib/prismadb";
 import GithubProvider from "next-auth/providers/github";
 
-import type { DefaultSession } from "next-auth";
 
 
 export const authConfig: NextAuthOptions = {
@@ -24,27 +23,21 @@ export const authConfig: NextAuthOptions = {
         },
       },
       async authorize(credentials) {
-        console.log("authorize");
-        console.log(credentials);
-        if (!credentials?.email || !credentials?.password) {
-          console.log("Email e senha obrigatórios");
-          throw new Error("Email e senha são obrigatórios");
+        if (!credentials || !credentials.email || !credentials.password) {
+          throw new Error("Credenciais inválidas");
         }
+
         const user = await prismadb.user.findUnique({
           where: {
-            email: credentials.email,
+            email: credentials?.email,
           },
         });
 
-        if (!user || !user.hashedPassword) {
-          console.log("Email não registrado");
+        if (!user) {
           throw new Error("Email não registrado");
         }
 
-        const isCorrectPassword =
-          user.hashedPassword === credentials.password ? user : false;
-
-        if (!isCorrectPassword) {
+        if (user.hashedPassword !== credentials.password) {
           throw new Error("Senha incorreta");
         }
 
@@ -56,25 +49,58 @@ export const authConfig: NextAuthOptions = {
       clientSecret: process.env.GITHUB_SECRET || "",
     }),
   ],
+  pages: {
+    signIn: "/",
+  },
 
   callbacks: {
-    async session({ session, user, token }) {
-      const userData = await prismadb.user.findUnique({
-        where: {
-          email: session.user?.email || "",
-        },
-      });
+    async jwt({ session, user, token }) {
+      if (session && user) {
+        session.user = token.user;
+        user && (token.user = user);
+      }
       
 
-      if (userData && session && session.user) {
-        session.user.name = userData?.username;
-        session.user.image = userData?.profileImage
-        session.user.id = userData?.id
-        session.user.description = userData?.description
-        //session.user.socialMedia = userData?.socialMedia
-      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session) {
+        const currentUser = await prismadb.user.findUnique({
+          where: {
+            id: token.sub,
+          },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            profileImage: true,
+            description: true,
+            socialMedia:{
+              select: {
+                tiktok: true,
+                instagram: true,
+                github: true,
+                discord: true,
+                youtube: true,
+                twitter: true,
+                pinterest: true,
+                linkedin: true,
+              }
+            }
+          
+          },
+        });
 
+        if(!currentUser) return session
 
+        session.user = {
+          name: currentUser?.name,
+          email: currentUser?.email,
+          image: currentUser?.profileImage || "",
+          description: currentUser?.description || "",
+          socialMedia: currentUser?.socialMedia || []
+        }
+        }
       return session;
     },
   },

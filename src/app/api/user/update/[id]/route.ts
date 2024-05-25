@@ -7,49 +7,60 @@ import { authConfig } from "@/lib/auth";
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
     const session = await getServerSession(authConfig);
-
     if (!session?.user) {
       return new NextResponse("Unauthenticated", { status: 401 });
     }
 
+
+    const authenticatedUser = await prismadb.user.findFirst({
+      where: {
+        email: session.user.email,
+      },
+    })
+
+
+
+     
+
     const formData = await request.formData()
-    const username = formData.get('username') as string
-    const description = formData.get('description') as string 
+    const formName = formData.get('name') as string
+    const formDescription = formData.get('description') as string 
     
-    if (!params.id) {
-      return new NextResponse("User ID is required", { status: 400 });
-    }
+   
+    const socialLinks = {
+      instagram: formData.get('instagram') as string || null,
+      discord: formData.get('discord') as string || null,
+      github: formData.get('github') as string || null,
+      tiktok: formData.get('tiktok') as string || null,
+      twitter: formData.get('twitter') as string || null,
+    };
+
+    console.log(socialLinks)
 
     const existingUser = await prismadb.user.findUnique({
-      where: { id: params.id },
+      where: { id: authenticatedUser?.id },
     });
-
-    const existingUsername = await prismadb.user.findUnique({
-      where: { username },
-    })
-    if(existingUsername) {
-      return new NextResponse("Username already exists", { status: 400 });  
-    }
 
     if (!existingUser) {
       return new NextResponse("User not found", { status: 404 });
     }
 
-    // Verificar se o usuário está tentando atualizar seu próprio perfil
     if (existingUser.email !== session.user.email) {
       return new NextResponse("Unauthorized", { status: 403 });
     }
 
-
     const updatedUser = await prismadb.user.update({
-      where: { id: params.id },
+      where: { id: authenticatedUser?.id },
       data: {
-        username,
-        description,
-       
+        name: formName,
+        description: formDescription,
+       socialMedia: {
+          update: socialLinks
+       }
       },
       include: { socialMedia: true }, 
     });
+
 
     return new NextResponse("Usuário alterado com sucesso!", {status: 200});
   } catch (error) {

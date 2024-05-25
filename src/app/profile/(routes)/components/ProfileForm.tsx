@@ -2,29 +2,54 @@
 
 import React, { useState } from 'react';
 import { InputSocial } from './InputSocial';
+import { useSession } from 'next-auth/react';
 
 type ProfileFormData = {
-  username: string;
+  name: string;
   description: string;
+ socialLinks: { [key: string]: string };
 };
 
 function ProfileForm({ sessionUserData }: { sessionUserData: any }) {
+
   const [status, setStatus] = useState<string | null>(null);
   const user = sessionUserData.user;
 
   const [formData, setFormData] = useState<ProfileFormData>({
-    username: user?.name,
+    name: user?.name,
     description: user?.description,
+    socialLinks: {
+      instagram: user?.socialMedia.instagram,
+      tiktok: user?.socialMedia.tiktok,
+      twitter: user?.socialMedia.twitter,
+      youtube: user?.socialMedia.youtube,
+    }
   });
+
+
+
+  const handleSocialChange = (name: string, value: string) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      socialLinks: {
+        ...prevFormData.socialLinks,
+        [name]: value,
+      },
+    }));
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formDataToSend = new FormData();
-    formDataToSend.append('username', formData.username);
+    formDataToSend.append('name', formData.name);
     formDataToSend.append('description', formData.description);
+    // Incluindo as redes sociais
+    for (const [key, value] of Object.entries(formData.socialLinks)) {
+      formDataToSend.append(key, value);
+    }
 
     try {
-      const response = await fetch(`/api/user/${sessionUserData.user.id}`, {
+      const response = await fetch(`/api/user/update/${sessionUserData.user.id}`, {
         method: "PUT",
         body: formDataToSend,
       });
@@ -44,8 +69,8 @@ function ProfileForm({ sessionUserData }: { sessionUserData: any }) {
         <input 
           type="text" 
           id="username" 
-          value={formData.username}
-          onChange={(e) => setFormData({ ...formData, username: e.target.value })} 
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })} 
           className="shadow appearance-none border rounded w-full py-2 px-3 text-white bg-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
@@ -63,12 +88,11 @@ function ProfileForm({ sessionUserData }: { sessionUserData: any }) {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <InputSocial onChange={() => {}} socialMediaName={"Instagram"} />
-        <InputSocial onChange={() => {}} socialMediaName={"Discord"} />
-        <InputSocial onChange={() => {}} socialMediaName={"Github"} />
-        <InputSocial onChange={() => {}} socialMediaName={"Tiktok"} />
-        <InputSocial onChange={() => {}} socialMediaName={"Twitter"} />
-        <InputSocial onChange={() => {}} socialMediaName={"Facebook"} />
+      {
+        Object.entries(formData.socialLinks).map(([name, value]) => (
+          <InputSocial key={name} socialMediaApp={name} value={value} onChange={(e) => handleSocialChange(e.target.value)} />
+        ))
+      }
       </div>
 
       <button type="submit" className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">

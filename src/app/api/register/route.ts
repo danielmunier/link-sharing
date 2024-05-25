@@ -8,7 +8,7 @@ import authConfig from '@/lib/auth';
 
 
 const userSchema = z.object({
-    username: z
+    name: z
     .string()
     .min(1, "Username is required")
     .max(100)
@@ -36,12 +36,11 @@ export async function POST(req: Request) {
     
 
     try {
-        const {email, username, password} = userSchema.parse(body)
-        console.log(username)
+        const {email, name, password} = userSchema.parse(body)
      
 
 
-        const existingUser = await prismadb.user.findUnique({
+        const existingUser = await prismadb.user.findFirst({
             where: {
                 email: email
             }
@@ -49,7 +48,7 @@ export async function POST(req: Request) {
 
         const existingUsername = await prismadb.user.findFirst({
             where: {
-                username: username
+                name: name
             }
         })
 
@@ -69,7 +68,7 @@ export async function POST(req: Request) {
             data: {
                email,
                hashedPassword,
-               username,
+               name,
                profileImage: ""
                
             }

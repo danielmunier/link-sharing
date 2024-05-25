@@ -8,7 +8,7 @@ import Link from "next/link";
 export const SessionInfo = () => {
   const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
-
+  
   if (status === "loading") return <div>Loading...</div>;
   if (!session)
     return <Button text="Login" href="/auth" />;
@@ -16,7 +16,7 @@ export const SessionInfo = () => {
   return (
     <div className="relative inline-block text-left">
       <Button
-        text={session.user?.name || "Profile"}
+        text={session?.user?.name || "Profile"}
         className="px-4 py-2 rounded-md hover:bg-gray-700 text-white"
         onClick={() => setIsOpen(!isOpen)} 
       />

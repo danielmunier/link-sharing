@@ -18,7 +18,7 @@ export function CredentialsForm(props: CredentialsFormProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [variant, setVariant] = useState("login");
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -29,10 +29,10 @@ export function CredentialsForm(props: CredentialsFormProps) {
   }, []);
 
 
-  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newUsername = event.target.value.replace(/\s+/g, '');
-    setUsername(newUsername);
-    console.log(username)
+    setName(newUsername);
+    console.log(name)
 
     const isValid = /^\w[-]+$/.test(newUsername);
     setError(isValid ? null : "Username must only contain letters, numbers, underscores, hyphens and no spaces");
@@ -56,7 +56,7 @@ export function CredentialsForm(props: CredentialsFormProps) {
     try {
       const registerData = await axios.post("/api/register", {
         email,
-        username,
+        name: name,
         password,
       });
       console.log("Successfull register");
@@ -65,7 +65,7 @@ export function CredentialsForm(props: CredentialsFormProps) {
       console.log("Error trying to register");
       console.log(e);
     }
-  }, [email, username, password]);
+  }, [email, name, password]);
 
   return (
     <div className="bg-gray-800 p-8 rounded shadow-md w-96">
@@ -78,7 +78,7 @@ export function CredentialsForm(props: CredentialsFormProps) {
               <div className="flex items-center p-1">
                   <span className="flex-shrink-0 bg-white px-2 py-2 border-s text-sm font-medium text-gray-700">this.site/</span>
                   <input
-                onChange={handleUsernameChange}
+                onChange={handleNameChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="username"
                 type="text"
@@ -126,17 +126,7 @@ export function CredentialsForm(props: CredentialsFormProps) {
           >
             {variant === "login" ? "Criar uma conta" : "Faça login"}
           </a>
-          {/* <div
-            onClick={() => {
-              signIn("github", {
-                callbackUrl: "/",
-              });
-            }}
-            className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer h over:opacity-80 transition"
-          >
-            {" "}
-            <FaGithub size={40} />
-          </div> */}
+       
         </div>
       </form>
     </div>

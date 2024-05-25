@@ -1,4 +1,4 @@
-import { CredentialsForm } from "@/components/credentialsForm";
+import { CredentialsForm } from "@/app/auth/components/credentialsForm";
 import { Navbar } from "@/components/Navbar";
 
 export default async function Home() {

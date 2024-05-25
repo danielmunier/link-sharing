@@ -14,7 +14,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
         }
         
         const socialMediaData: SocialMedia = await request.json();
-        console.log(socialMediaData)
+
     
         // const updatedUser = await prismadb.user.update({
         //     where: {
