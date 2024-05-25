@@ -12,7 +12,7 @@ model User {
   id             String       @id @default(auto()) @map("_id") @db.ObjectId
   email          String       @unique
   hashedPassword String?
-  username       String       @unique
+  name       String       @unique
   profileImage   String?
   description    String?
   createdAt      DateTime     @default(now())
