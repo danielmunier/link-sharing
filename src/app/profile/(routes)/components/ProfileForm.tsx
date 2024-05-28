@@ -13,6 +13,11 @@ type SocialMedia = {
   tiktok: string;
   twitter: string;
   youtube: string;
+  pinterest: string 
+  github: string 
+  discord: string 
+  linkedin: string 
+  facebook: string
 };
 
 
@@ -32,6 +37,9 @@ function ProfileForm({ sessionUserData }: { sessionUserData: any }) {
       tiktok: user?.socialMedia.tiktok || "",
       twitter: user?.socialMedia.twitter || "",
       youtube: user?.socialMedia.youtube || "",
+      github: user?.socialMedia.github || "",
+      discord: user?.socialMedia.discord || "",
+      linkedin: user?.socialMedia.linkedin || "",
   })
 
 const handleSocialChange = (e: {name: string; value: string}) => {
@@ -48,14 +56,13 @@ const handleSocialChange = (e: {name: string; value: string}) => {
     const formDataToSend = new FormData();
     formDataToSend.append('name', formData.name);
     formDataToSend.append('description', formData.description);
-    // Incluindo as redes sociais
     for ( const key in formSocial ) {
       console.log(key)
       formDataToSend.append(key, formSocial[key]);
     }
 
     try {
-      const response = await fetch(`/api/user/update/${sessionUserData.user.id}`, {
+      const response = await fetch(`/api/user/update/`, {
         method: "PUT",
         body: formDataToSend,
       });
