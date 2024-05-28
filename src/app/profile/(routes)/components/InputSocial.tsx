@@ -7,6 +7,7 @@ import {
   FaTwitter,
   FaFacebook,
   FaYoutube,
+  FaPinterest,
 } from "react-icons/fa";
 
 export const InputSocial = ({ socialMediaApp, onChange, value }: {
@@ -26,6 +27,7 @@ export const InputSocial = ({ socialMediaApp, onChange, value }: {
     { key: "twitter", icon: <FaTwitter size="24" />, style: "text-blue-500" },
     { key: "facebook", icon: <FaFacebook size="24" />, style: "text-blue-500" },
     { key: "youtube", icon: <FaYoutube size="24" />, style: "text-red-500" },
+    {key: "pinterest", icon: <FaPinterest size="24" />, style: "text-red-500"}
   ];
 
   const socialIcon = socialIcons.find((icon) => icon.key === socialMediaApp);
