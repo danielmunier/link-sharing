@@ -33,6 +33,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       github: formData.get('github') as string || null,
       tiktok: formData.get('tiktok') as string || null,
       twitter: formData.get('twitter') as string || null,
+      youtube: formData.get('youtube') as string || null,
+      pinterest: formData.get('pinterest') as string || null,
+
     };
 
     console.log(socialLinks)
