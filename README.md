@@ -2,10 +2,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Usage example
 
-User Page
-![example](https://i.imgur.com/IHGftpS.png)
+### User Page
+![example](https://i.imgur.com/NDFTAij.png)
 
-Edit Profile
+### Edit Profile
 ![example](https://i.imgur.com/RvAiASu.png)
 
 

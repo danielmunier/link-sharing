@@ -34,7 +34,7 @@ async function ProfilePage({ params }: ProfilePageProps) {
 
 
   return (
-    <div className="py-4 bg-gray-900 h-full w-full bg-[url('https://cdn.ayo.so/final/fe7eb772-2b07-429e-b989-90392c37ed32.webp')] bg-cover">
+    <div className="py-4 bg-gray-900 h-full w-full bg-[url('https://i.imgur.com/ZYVfJ5Y.jpeg')] bg-cover">
       <div className="flex items-center justify-center h-screen">
         <div className="shadow-md bg-black w-11/12 max-w-lg px-2 rounded-lg p-4">
           <div className="flex flex-row items-center">
