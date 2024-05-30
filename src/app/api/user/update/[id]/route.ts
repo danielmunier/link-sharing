@@ -26,7 +26,6 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     const formName = formData.get('name') as string
     const formDescription = formData.get('description') as string 
     
-   
     const socialLinks = {
       instagram: formData.get('instagram') as string || null,
       discord: formData.get('discord') as string || null,
@@ -37,7 +36,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       pinterest: formData.get('pinterest') as string || null,
 
     };
-
+    console.log(formDescription)
     console.log(socialLinks)
 
     const existingUser = await prismadb.user.findUnique({

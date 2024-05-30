@@ -13,11 +13,9 @@ type SocialMedia = {
   tiktok: string;
   twitter: string;
   youtube: string;
-  pinterest: string 
   github: string 
   discord: string 
   linkedin: string 
-  facebook: string
 };
 
 
@@ -62,7 +60,7 @@ const handleSocialChange = (e: {name: string; value: string}) => {
     }
 
     try {
-      const response = await fetch(`/api/user/update/`, {
+      const response = await fetch(`/api/user/update/${user?.id}/`, {
         method: "PUT",
         body: formDataToSend,
       });

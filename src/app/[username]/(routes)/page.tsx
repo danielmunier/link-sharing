@@ -34,14 +34,14 @@ async function ProfilePage({ params }: ProfilePageProps) {
 
 
   return (
-    <div className="py-4 bg-gray-900 h-full w-full bg-[url('https://cdn.ayo.so/final/fe7eb772-2b07-429e-b989-90392c37ed32.webp')]">
+    <div className="py-4 bg-gray-900 h-full w-full bg-[url('https://cdn.ayo.so/final/fe7eb772-2b07-429e-b989-90392c37ed32.webp')] bg-cover">
       <div className="flex items-center justify-center h-screen">
         <div className="shadow-md bg-black w-11/12 max-w-lg px-2 rounded-lg p-4">
           <div className="flex flex-row items-center">
             <img
               src={
                 currentUser.profileImage ||
-                "https://cdn.ayo.so/final/89f0052d-82a8-48f6-8006-6bc0ac7aaae3.webp"
+                "https://avatars.githubusercontent.com/u/63890469?v=4"
               } 
               alt="User profile picture"
               className="object-cover rounded-full border-black w-24 h-24"
